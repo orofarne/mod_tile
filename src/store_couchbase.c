@@ -745,7 +745,7 @@ static lcb_t init_couchbase(struct couchbase_ctx *ctx, const char *connection_st
     lcb_t instance = NULL;
     struct lcb_create_st create_options;
     char *host = NULL, *user = NULL, *password = NULL, *bucket = NULL;
-    int len;
+    int len, i;
 
     memset(&create_options, 0, sizeof(create_options));
 
@@ -753,6 +753,11 @@ static lcb_t init_couchbase(struct couchbase_ctx *ctx, const char *connection_st
     host = find_option(connection_string, "host:", &len);
     if (host != NULL) {
         create_options.v.v0.host = host;
+    }
+    for (i = 0; i < len; ++i) {
+        if (host[i] == '/') {
+            host[i] = ';';
+        }
     }
     // User
     user = find_option(connection_string, "user:", &len);
